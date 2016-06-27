@@ -14,6 +14,12 @@ namespace Litskevich.Family.Infrastructure.Data.Configurations
             Property(p => p.ID)
                 .HasColumnName("MaterialID")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            Ignore(m => m.FileType);
+
+            HasOptional(m => m.File)
+                .WithMany()
+                .Map(m => m.MapKey("FileBlobID"));
         }
     }
 }

@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -41,27 +42,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\IFamilyUnitOfWork.cs" />
+    <Compile Include="Contracts\Managers\IArticlesManager.cs" />
+    <Compile Include="Contracts\Managers\IFilesManager.cs" />
+    <Compile Include="Contracts\Managers\IMaterialsManager.cs" />
+    <Compile Include="Contracts\Managers\IPersonsManager.cs" />
+    <Compile Include="Contracts\Repositories\IArticleRepository.cs" />
+    <Compile Include="Contracts\Repositories\IMaterialRepository.cs" />
     <Compile Include="Contracts\Repositories\IPersonRepository.cs" />
+    <Compile Include="Contracts\Services\IFamilyInfrastructureProvider.cs" />
+    <Compile Include="Contracts\Services\IThumbnailProvider.cs" />
     <Compile Include="Entities\Article.cs" />
     <Compile Include="Entities\Manager.cs" />
     <Compile Include="Entities\ManagerRoleType.cs" />
+    <Compile Include="Entities\ManagerToken.cs" />
     <Compile Include="Entities\Material.cs" />
     <Compile Include="Entities\Person.cs" />
+    <Compile Include="Events\ManagerCreatedEvent.cs" />
+    <Compile Include="Events\MaterialAddedEvent.cs" />
+    <Compile Include="Events\MaterialDeletedEvent.cs" />
+    <Compile Include="Events\MaterialInfoChangedEvent.cs" />
+    <Compile Include="Events\MaterialTransformEvent.cs" />
+    <Compile Include="Events\MembersChangedEvent.cs" />
+    <Compile Include="Events\RegistrationRequestedEvent.cs" />
+    <Compile Include="Managers\ArticlesManager.cs" />
+    <Compile Include="Managers\FilesManager.cs" />
+    <Compile Include="Managers\MaterialsManager.cs" />
+    <Compile Include="Managers\_BaseManager.cs" />
+    <Compile Include="Managers\PersonsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Events\MaterialFileChangedEvent.cs" />
+    <Compile Include="Services\MaterialModificationService.cs" />
+    <Compile Include="Services\NotificationsHandlerService.cs" />
+    <Compile Include="Values\ImageSettings.cs" />
+    <Compile Include="Values\MaterialData.cs" />
+    <Compile Include="Values\PersonData.cs" />
+    <Compile Include="Values\StorageSettings.cs" />
+    <Compile Include="Values\ThumbnailSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\SXCore\SXCore.Common\SXCore.Common.csproj">
       <Project>{fe36c71d-2034-40a2-ba5a-692bf76b5637}</Project>
       <Name>SXCore.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Litskevich.Family.Common\Litskevich.Family.Common.csproj">
-      <Project>{4e147d03-c966-47f1-80a2-a53e5bbbfac1}</Project>
-      <Name>Litskevich.Family.Common</Name>
+    <ProjectReference Include="..\..\..\SXCore\SXCore.Domain\SXCore.Domain.csproj">
+      <Project>{f75a8467-5754-4b4b-8b0c-d1d7de11df7e}</Project>
+      <Name>SXCore.Domain</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Values\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

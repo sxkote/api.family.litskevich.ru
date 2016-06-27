@@ -1,6 +1,8 @@
-﻿using SXCore.Common.Entities;
-using SXCore.Common.Services;
+﻿using SXCore.Common.Services;
 using System.Collections.Generic;
+using System;
+using SXCore.Common.Exceptions;
+using SXCore.Domain.Entities;
 
 namespace Litskevich.Family.Domain.Entities
 {
@@ -17,6 +19,14 @@ namespace Litskevich.Family.Domain.Entities
             this.Roles = new List<ManagerRoleType>();
         }
 
+        public void ChangeLogin(string login)
+        {
+            if (String.IsNullOrWhiteSpace(login))
+                throw new CustomOperationException("Can't set login to empty string");
+
+            this.Login = login;
+        }
+
         public void ChangePassword(string password)
         {
             this.Password = CommonService.HashPassword(password, 10);
@@ -30,25 +40,14 @@ namespace Litskevich.Family.Domain.Entities
                     this.Roles.Add(r);
         }
 
-        static public Manager Create(Person person, string login, string password)
+        static public Manager Create(Person person, string login, string password, ICollection<ManagerRoleType> roles = null)
         {
             var manager = new Manager()
             {
                 Person = person,
                 Login = login,
-                Password = CommonService.HashPassword(password, 10)
-            };
-
-            return manager;
-        }
-
-        static public Manager Import(Person person, string login, string password)
-        {
-            var manager = new Manager()
-            {
-                Person = person,
-                Login = login,
-                Password = password
+                Password = CommonService.HashPassword(password, 10),
+                Roles = roles == null ? new List<ManagerRoleType>() : roles
             };
 
             return manager;

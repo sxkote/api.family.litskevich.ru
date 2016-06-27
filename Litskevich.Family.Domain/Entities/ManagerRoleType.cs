@@ -1,4 +1,4 @@
-﻿using SXCore.Common.Entities;
+﻿using SXCore.Domain.Entities;
 using System;
 
 namespace Litskevich.Family.Domain.Entities

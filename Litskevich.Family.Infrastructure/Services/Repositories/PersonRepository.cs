@@ -20,7 +20,7 @@ namespace Litskevich.Family.Infrastructure.Services.Repositories
         {
             get
             {
-                return base.Query
+                return base.Query.OrderBy(t => t.ID)
                     .Include(t => t.Avatar);
             }
         }
@@ -35,13 +35,24 @@ namespace Litskevich.Family.Infrastructure.Services.Repositories
                 query = query.Where(p => System.Data.Entity.SqlServer.SqlFunctions.PatIndex(fullFilter, p.Name.Last + " " + p.Name.First + " " + p.Name.Second + " " + p.Name.Maiden) > 0);
             }
 
-            return query.ToList();
+            return query
+                .OrderBy(p => p.Name.Last)
+                .ThenBy(p => p.Name.First)
+                .ThenBy(p => p.Name.Second)
+                .ToList();
         }
 
-        public Person SearchByLogin(string login)
+        public Person GetWithManager(long personID)
+        {
+            return this.QuerySingle
+                    .Include(p => p.Manager.Roles)
+                    .SingleOrDefault(p => p.ID == personID);
+        }
+
+        public Person GetByLogin(string login)
         {
             var result = this.QuerySingle
-                .Include(p => p.Manager)
+                .Include(p => p.Manager.Roles)
                 .SingleOrDefault(p => p.Manager.Login.Equals(login, CommonService.StringComparison));
 
             if (result != null)
@@ -52,6 +63,11 @@ namespace Litskevich.Family.Infrastructure.Services.Repositories
             //    .SingleOrDefault(p => p.Email.Equals(login, CommonService.StringComparison) || p.Phone.Equals(login, CommonService.StringComparison));
 
             return null;
+        }
+
+        public IEnumerable<Person> GetByIDs(IEnumerable<long> ids)
+        {
+            return this.QueryAll.Where(p => ids.Contains(p.ID)).ToList();    
         }
     }
 }

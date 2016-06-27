@@ -15,16 +15,16 @@ namespace Litskevich.Family.Infrastructure.Data.Configurations
                 .HasColumnName("ArticleID")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
-            Property(p => p.Period.Begin)
-                .HasColumnName("PeriodBegin");
-            Property(p => p.Period.End)
-                .HasColumnName("PeriodEnd");
+            //Property(p => p.Period.Begin)
+            //    .HasColumnName("PeriodBegin");
+            //Property(p => p.Period.End)
+            //    .HasColumnName("PeriodEnd");
 
             HasRequired(a => a.Author)
                 .WithMany()
                 .Map(m => m.MapKey("AuthorID"));
 
-            HasMany(a => a.Persons)
+            HasMany(a => a.Members)
                 .WithMany()
                 .Map(ap =>
                 {
@@ -34,7 +34,8 @@ namespace Litskevich.Family.Infrastructure.Data.Configurations
                 });
 
             HasMany(a => a.Materials)
-                .WithRequired()
+                .WithRequired(m => m.Article)
+                //.HasForeignKey(m=>m.ArticleID)
                 .Map(m => m.MapKey("ArticleID"))
                 .WillCascadeOnDelete(true);
         }

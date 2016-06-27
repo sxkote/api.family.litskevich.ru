@@ -7,11 +7,11 @@ namespace Litskevich.Family.Infrastructure.Data
     public partial class FamilyDbContext : CoreDbContext
     {
         public FamilyDbContext()
-            : base("name=FamilyDbConnection")
+            : this("")
         { }
 
         public FamilyDbContext(string connection)
-            : base(connection)
+            : base(string.IsNullOrWhiteSpace(connection) ? "name=FamilyDbConnection": connection)
         { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -24,6 +24,7 @@ namespace Litskevich.Family.Infrastructure.Data
             modelBuilder.Configurations.Add(new PersonConfiguration());
             modelBuilder.Configurations.Add(new ManagerConfiguration());
             modelBuilder.Configurations.Add(new ManagerRoleTypeConfiguration());
+            modelBuilder.Configurations.Add(new ManagerTokenConfiguration());
             modelBuilder.Configurations.Add(new ArticleConfiguration());
             modelBuilder.Configurations.Add(new MaterialConfiguration());
         }
