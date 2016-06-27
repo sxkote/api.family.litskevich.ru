@@ -4,6 +4,13 @@
 # Secure Files
 *.secure.config
 
+# App_Data Files
+[Aa]pp_[Dd]ata/
+
+# Importer should be excluded from the solution
+# because, it is instant project to transfrer materials...
+Litskevich.Family.Importer/
+
 # User-specific files
 *.suo
 *.user
