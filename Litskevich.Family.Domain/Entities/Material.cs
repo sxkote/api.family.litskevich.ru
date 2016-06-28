@@ -23,7 +23,12 @@ namespace Litskevich.Family.Domain.Entities
             }
         }
 
-        private Material() { }
+        private Material()
+        {
+            this.Date = null;
+            this.Title = "";
+            this.Comment = "";
+        }
 
         public void ChangeFile(FileBlob file)
         {
@@ -51,7 +56,7 @@ namespace Litskevich.Family.Domain.Entities
 
             return this.File.GetPath();
         }
-        
+
         static public Material Create(Article article, FileBlob fileblob)
         {
             if (article == null)

@@ -54,8 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Configurations\ArticleConfiguration.cs" />
+    <Compile Include="Data\Configurations\GuestConfiguration.cs" />
     <Compile Include="Data\Configurations\ManagerConfiguration.cs" />
-    <Compile Include="Data\Configurations\ManagerTokenConfiguration.cs" />
+    <Compile Include="Data\Configurations\UserTokenConfiguration.cs" />
     <Compile Include="Data\Configurations\MaterialConfiguration.cs" />
     <Compile Include="Data\Configurations\PersonConfiguration.cs" />
     <Compile Include="Data\FamilyDbContext.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Services\FamilyInfrastructureProvider.cs" />
     <Compile Include="Services\FamilyUnitOfWork.cs" />
     <Compile Include="Services\Repositories\ArticleRepository.cs" />
+    <Compile Include="Services\Repositories\GuestRepository.cs" />
     <Compile Include="Services\Repositories\MaterialRepository.cs" />
     <Compile Include="Services\Repositories\PersonRepository.cs" />
   </ItemGroup>

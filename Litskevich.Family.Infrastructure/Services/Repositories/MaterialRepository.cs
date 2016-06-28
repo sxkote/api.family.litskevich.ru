@@ -2,7 +2,6 @@
 using Litskevich.Family.Domain.Entities;
 using Litskevich.Family.Infrastructure.Data;
 using SXCore.Infrastructure.EF.Services;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;

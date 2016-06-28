@@ -12,6 +12,8 @@ namespace Litskevich.Family.Infrastructure.Services
 {
     public class FamilyInfrastructureProvider : InfrastructureProvider, IFamilyInfrastructureProvider
     {
+        public string WebSiteUrl { get { return this.GetSettings("WebSiteUrl"); } }
+
         public string FolderEmpty { get { return this.GetStorageSettings().FolderEmpty; } }
         public string FolderDeleted { get { return this.GetStorageSettings().FolderDeleted; } }
 
@@ -64,10 +66,14 @@ namespace Litskevich.Family.Infrastructure.Services
 
         public ParamValue CreateStorageSASToken(int hours)
         {
-            // add Azure SAS Token Info to get direct to material urls
-            var storageConfig = this.GetSettings<FileStorageConfig>(StorageConfigSettingsName);
-            if (storageConfig != null && storageConfig.Type == FileStorageConfig.StorageType.Azure && !String.IsNullOrWhiteSpace(storageConfig.ConnectionString))
-                return new ParamValue(this.GetStorageSettings().SASTokenName, AzureFileStorageService.CreateAzureSASToken(storageConfig.ConnectionString, hours));
+            try
+            {
+                // add Azure SAS Token Info to get direct to material urls
+                var storageConfig = this.GetSettings<FileStorageConfig>(StorageConfigSettingsName);
+                if (storageConfig != null && storageConfig.Type == FileStorageConfig.StorageType.Azure && !String.IsNullOrWhiteSpace(storageConfig.ConnectionString))
+                    return new ParamValue(this.GetStorageSettings().SASTokenName, AzureFileStorageService.CreateAzureSASToken(storageConfig.ConnectionString, hours));
+            }
+            catch { }
 
             return null;
         }

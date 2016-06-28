@@ -10,6 +10,7 @@ namespace Litskevich.Family.Infrastructure.Services
     public class FamilyUnitOfWork : CoreUnitOfWork<FamilyDbContext>, IFamilyUnitOfWork
     {
         private IPersonRepository _personRepository;
+        private IGuestRepository _guestRepository;
         private IArticleRepository _articlesRepository;
         private IMaterialRepository _materialRepository;
 
@@ -20,6 +21,16 @@ namespace Litskevich.Family.Infrastructure.Services
                 if (_personRepository == null)
                     _personRepository = new PersonRepository(this.DbContext);
                 return _personRepository;
+            }
+        }
+
+        public IGuestRepository GuestRepository
+        {
+            get
+            {
+                if (_guestRepository== null)
+                    _guestRepository = new GuestRepository(this.DbContext);
+                return _guestRepository;
             }
         }
 

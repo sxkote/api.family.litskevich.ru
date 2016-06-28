@@ -1,15 +1,7 @@
 ﻿using Litskevich.Family.Domain.Contracts.Managers;
-using Litskevich.Family.Domain.Entities;
-using Litskevich.Family.Domain.Values;
-using Litskevich.Family.WebApi.Models;
 using Litskevich.Family.WebApi.Models.Requests;
-using SXCore.Common.Exceptions;
-using SXCore.Common.Services;
 using SXCore.WebApi;
 using SXCore.WebApi.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
 
 namespace Litskevich.Family.WebApi.Controllers
@@ -39,5 +31,6 @@ namespace Litskevich.Family.WebApi.Controllers
         {
             _manager.ChangePassword(request.PasswordOld, request.PasswordNew);
         }
+
     }
 }

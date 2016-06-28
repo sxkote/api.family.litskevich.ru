@@ -11,7 +11,8 @@ namespace Litskevich.Family.Domain.Services
 {
     public class NotificationsHandlerService :
         IDomainEventHandler<RegistrationRequestedEvent>,
-        IDomainEventHandler<ManagerCreatedEvent>
+        IDomainEventHandler<ManagerCreatedEvent>,
+        IDomainEventHandler<GuestCreatedEvent>
     {
         private IFamilyInfrastructureProvider _infrastructure;
 
@@ -69,6 +70,8 @@ namespace Litskevich.Family.Domain.Services
 
             var sb = new StringBuilder();
             sb.AppendLine("Добро пожаловать на сайт семейного архива:");
+            sb.AppendLine();
+            sb.AppendLine($"Адрес сайта: {this.Infrastructure.WebSiteUrl}");
             sb.AppendLine($"Логин: {args.Login}");
             sb.AppendLine($"Пароль: {args.Password}");
             sb.AppendLine();
@@ -76,6 +79,25 @@ namespace Litskevich.Family.Domain.Services
             sb.AppendLine("Семейный Архив Лицкевичей");
 
             try { this.EmailService.SendNotification(args.Email, new Message("Регистрация в семейном архиве", sb.ToString())); }
+            catch { }
+        }
+
+        public void Handle(GuestCreatedEvent args)
+        {
+            if (String.IsNullOrWhiteSpace(args.Email))
+                return;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Вы были приглашены для просмотра семейного сайта Архив Лицкевичей:");
+            sb.AppendLine();
+            sb.AppendLine($"Адрес сайта: {this.Infrastructure.WebSiteUrl}");
+            sb.AppendLine($"Логин: {args.Login}");
+            sb.AppendLine($"Пароль: {args.Password}");
+            sb.AppendLine();
+            sb.AppendLine("С уважением,");
+            sb.AppendLine("Семейный Архив Лицкевичей");
+
+            try { this.EmailService.SendNotification(args.Email, new Message("Приглашение в Архив Лицкевичей", sb.ToString())); }
             catch { }
         }
 

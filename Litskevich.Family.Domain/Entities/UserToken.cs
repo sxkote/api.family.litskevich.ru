@@ -6,25 +6,26 @@ using System;
 
 namespace Litskevich.Family.Domain.Entities
 {
-    public class ManagerToken : Entity, ICoded
+    public class UserToken : Entity, ICoded
     {
         public string Code { get; private set; }
         public Manager Manager { get; private set; }
+        public Guest Guest { get; private set; }
         public DateTimeOffset Date { get; private set; }
         public DateTimeOffset Expire { get; private set; }
         public string Data { get; private set; }
 
-        private ManagerToken()
+        private UserToken()
         {
-            //this.Code = Guid.NewGuid().ToString();
+            this.Code = Guid.NewGuid().ToString();
         }
 
-        static public ManagerToken Create(string code, Manager manager, DateTimeOffset expire, string data)
+        static public UserToken Create(Manager manager, Guest guest, DateTimeOffset expire, string data = "")
         {
-            return new ManagerToken()
+            return new UserToken()
             {
-                Code = String.IsNullOrWhiteSpace(code) ? Guid.NewGuid().ToString() : code,
                 Manager = manager,
+                Guest = guest,
                 Date = CommonService.Now,
                 Expire = expire,
                 Data = data ?? ""

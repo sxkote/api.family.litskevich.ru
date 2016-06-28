@@ -27,29 +27,38 @@ namespace Litskevich.Family.Infrastructure.Services
             _infrastructure = infrastructure;
         }
 
-        protected Token BuildToken(ManagerToken managerToken)
+        protected Token BuildToken(UserToken userToken)
         {
             var now = CommonService.Now;
 
             // проверяем токен на валидность и годность
-            if (managerToken == null || now < managerToken.Date || managerToken.Expire < now)
+            if (userToken == null || now < userToken.Date || userToken.Expire < now)
                 return null;
 
-            // берем менеджера из токена
-            var manager = managerToken?.Manager;
-            if (manager == null)
-                return null;
-
-            // берем пользователя из токена и проверяем на активность (не удален)
-            var person = manager?.Person;
-            if (person == null)
-                return null;
-
-            // создаем стандартный токен
-            return new Token(0, person.ID, manager.ID, manager.Login, managerToken.Code, managerToken.Expire, person.Name, person.Avatar)
+            if (userToken.Manager != null)
             {
-                Roles = manager.Roles.Select(r => r.Name).ToArray()
-            };
+                var manager = userToken.Manager;
+
+                var person = manager.Person;
+                if (person == null)
+                    return null;
+
+                return new Token(0, person.ID, manager.ID, manager.Login, userToken.Code, userToken.Expire, person.Name, person.Avatar)
+                {
+                    Roles = manager.Roles?.Select(r => r.Name).ToArray()
+                };
+            }
+            else if (userToken.Guest != null)
+            {
+                var guest = userToken.Guest;
+
+                return new Token(0, 0, 0, guest.Login, userToken.Code, userToken.Expire, guest.Name)
+                {
+                    Roles = new string[] { "User" }
+                };
+            }
+
+            return null;
         }
 
         //protected Token CreateToken(Manager manager, int hours = DefaultExpirationHours)
@@ -91,18 +100,17 @@ namespace Litskevich.Family.Infrastructure.Services
             using (var dbContext = new FamilyDbContext())
             {
                 // находим токин пользователя в базе по заданному коду токена
-                var managerToken = dbContext.Set<ManagerToken>()
+                var managerToken = dbContext.Set<UserToken>()
                 .Include(t => t.Manager.Roles)
                 .Include(t => t.Manager.Person.Avatar)
+                .Include(t => t.Guest)
                 //.Where(t => t.Manager.Person.State == Common.Enums.ObjectState.Active)
-                .SingleOrDefault(t => t.Code.ToLower() == token.ToLower());
+                .SingleOrDefault(t => t.Date <= now && now <= t.Expire && t.Code.ToLower() == token.ToLower());
 
                 if (managerToken == null)
                     return null;
 
                 result = this.BuildToken(managerToken);
-
-                //result = Newtonsoft.Json.JsonConvert.DeserializeObject<Token>(managerToken.Data);
             }
 
             return result;
@@ -118,31 +126,40 @@ namespace Litskevich.Family.Infrastructure.Services
             // создаем новый контекст, дабы не использовать "уже загруженные" сущности
             using (var dbContext = new FamilyDbContext())
             {
-                // находим пользователя по логину
-                var manager = dbContext.Set<Manager>()
-                .Include(t => t.Person.Avatar)
-                .Include(t => t.Roles)
-                //.Where(m => m.Person.State == Common.Enums.ObjectState.Active)
-                .FirstOrDefault(m => m.Login.ToLower() == login.ToLower());
+                UserToken userToken = null;
 
-                if (manager == null || !CommonService.VerifyPassword(password, manager.Password))
-                    return null;
+                // authentication for Managers
+                if (userToken == null)
+                {
+                    // находим пользователя по логину
+                    var manager = dbContext.Set<Manager>()
+                    .Include(t => t.Person.Avatar)
+                    .Include(t => t.Roles)
+                    //.Where(m => m.Person.State == Common.Enums.ObjectState.Active)
+                    .FirstOrDefault(m => m.Login.ToLower() == login.ToLower());
 
-                //result = this.CreateToken(manager);
-                //if (result == null)
-                //    return null;
+                    if (manager != null && CommonService.VerifyPassword(password, manager.Password))
+                        userToken = UserToken.Create(manager, null, now.AddHours(DefaultExpirationHours));
+                }
 
+                // authentication for Guests
+                if (userToken == null)
+                {
+                    var guest = dbContext.Set<Guest>()
+                        .FirstOrDefault(g => g.Date <= now && now <= g.Expire && g.Login.ToLower() == login.ToLower());
 
-                //DateTimeOffset expire = result?.Expire == null ? CommonService.Now.AddHours(DefaultExpirationHours) : (DateTimeOffset)result?.Expire.Value;
-                DateTimeOffset expire = now.AddHours(DefaultExpirationHours);
+                    if (guest != null && CommonService.VerifyPassword(password, guest.Password))
+                        userToken = UserToken.Create(null, guest, guest.Expire);
+                }
 
-                //var managerToken = ManagerToken.Create(result.Key, manager, expire, Newtonsoft.Json.JsonConvert.SerializeObject(result));
-                var managerToken = ManagerToken.Create(Guid.NewGuid().ToString(), manager, expire, "");
+                // saving new token 
+                if (userToken != null)
+                {
+                    dbContext.Set<UserToken>().Add(userToken);
+                    dbContext.SaveChanges();
 
-                dbContext.Set<ManagerToken>().Add(managerToken);
-                dbContext.SaveChanges();
-
-                result = this.BuildToken(managerToken);
+                    result = this.BuildToken(userToken);
+                }
             }
 
             return result;

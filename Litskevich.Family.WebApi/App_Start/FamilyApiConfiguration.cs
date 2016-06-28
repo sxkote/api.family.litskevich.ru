@@ -29,8 +29,10 @@ namespace Litskevich.Family.WebApi
 
 
             // Domain Events Handlers
-            container.RegisterType<NotificationsHandlerService, IDomainEventHandler<ManagerCreatedEvent>>(scope);
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<RegistrationRequestedEvent>>(scope);
+            container.RegisterType<NotificationsHandlerService, IDomainEventHandler<ManagerCreatedEvent>>(scope);
+            container.RegisterType<NotificationsHandlerService, IDomainEventHandler<GuestCreatedEvent>>(scope);
+
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialAddedEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialDeletedEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialFileChangedEvent>>(scope);

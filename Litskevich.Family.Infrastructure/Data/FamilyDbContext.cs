@@ -24,7 +24,8 @@ namespace Litskevich.Family.Infrastructure.Data
             modelBuilder.Configurations.Add(new PersonConfiguration());
             modelBuilder.Configurations.Add(new ManagerConfiguration());
             modelBuilder.Configurations.Add(new ManagerRoleTypeConfiguration());
-            modelBuilder.Configurations.Add(new ManagerTokenConfiguration());
+            modelBuilder.Configurations.Add(new GuestConfiguration());
+            modelBuilder.Configurations.Add(new UserTokenConfiguration());
             modelBuilder.Configurations.Add(new ArticleConfiguration());
             modelBuilder.Configurations.Add(new MaterialConfiguration());
         }

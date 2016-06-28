@@ -89,5 +89,12 @@ namespace Litskevich.Family.WebApi.Controllers
         {
             _manager.CreateManager(id, request.Login, request.Password, request.Roles);
         }
+
+        [HttpPost]
+        [Route("invite")]
+        public void InviteGuest([FromBody]InviteGuestRequest request)
+        {
+            _manager.InviteGuest(request.NameLast ?? "", request.NameFirst ?? "", request.Email ?? "", request.Phone ?? "", request.Login ?? "", request.Password, request.Hours);
+        }
     }
 }

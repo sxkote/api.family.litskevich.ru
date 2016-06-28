@@ -142,5 +142,35 @@ namespace Litskevich.Family.Domain.Managers
 
             DomainEvents.Raise(new ManagerCreatedEvent(person.Name, person.Email, person.Manager.Login, pass));
         }
+
+        public void InviteGuest(string nameLast, string nameFirst, string email, string phone, string login, string password = "", int hours = 24)
+        {
+            if (this.CurrentPerson == null)
+                throw new CustomArgumentException("Person is undefined!");
+
+            if (String.IsNullOrEmpty(login))
+                throw new CustomArgumentException("Login can't be empty for new Guest!");
+
+            var now = CommonService.Now;
+
+            var oldGuestsWithSameLogin = this.UnitOfWork.GuestRepository.GetAllByLogin(login);
+            foreach (var oldGuest in oldGuestsWithSameLogin)
+            {
+                if (oldGuest.Expire > now)
+                    oldGuest.Disable();
+                this.UnitOfWork.GuestRepository.Update(oldGuest);
+            }
+
+            var pass = String.IsNullOrWhiteSpace(password) ? CommonService.GeneratePassword(8, false) : password;
+
+            var guest = Guest.Create(this.CurrentPerson, new PersonName(nameFirst ?? "", nameLast ?? ""), email, phone, now.AddHours(hours), login, pass);
+
+            this.UnitOfWork.GuestRepository.Add(guest);
+
+
+            this.SaveChanges();
+
+            DomainEvents.Raise(new GuestCreatedEvent(guest.Name, guest.Email, guest.Login, pass));
+        }
     }
 }
