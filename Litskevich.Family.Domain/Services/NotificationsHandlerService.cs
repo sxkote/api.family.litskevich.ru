@@ -20,8 +20,6 @@ namespace Litskevich.Family.Domain.Services
 
         public INotificationService EmailService { get { return _infrastructure?.EmailService; } }
 
-        public string Owner { get { return this._infrastructure?.GetSettings("Owner"); } }
-
         public NotificationsHandlerService(IFamilyInfrastructureProvider infrastructure)
         {
             _infrastructure = infrastructure;
@@ -58,9 +56,9 @@ namespace Litskevich.Family.Domain.Services
             sb.AppendLine("С уважением,");
             sb.AppendLine("Семейный Архив Лицкевичей");
 
-            var owner = this.Infrastructure.GetSettings("owner");
-            if (!String.IsNullOrWhiteSpace(owner))
-                this.EmailService.SendNotification(owner, new Message("Регистрация в семейном архиве", sb.ToString()));
+            var email = this.Infrastructure.MainEmail;
+            if (!String.IsNullOrWhiteSpace(email))
+                this.EmailService.SendNotification(email, new Message("Регистрация в семейном архиве", sb.ToString()));
         }
 
         public void Handle(ManagerCreatedEvent args)

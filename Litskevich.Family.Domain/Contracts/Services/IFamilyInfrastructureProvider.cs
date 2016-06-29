@@ -7,6 +7,7 @@ namespace Litskevich.Family.Domain.Contracts.Services
 {
     public interface IFamilyInfrastructureProvider : IInfrastructureProvider
     {
+        string MainEmail { get; }
         string WebSiteUrl { get; }
 
         string FolderEmpty { get; }

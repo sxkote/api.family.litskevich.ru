@@ -11,6 +11,9 @@
 # because, it is instant project to transfrer materials...
 Litskevich.Family.Importer/
 
+# Publish Info
+*.pubxml
+
 # User-specific files
 *.suo
 *.user

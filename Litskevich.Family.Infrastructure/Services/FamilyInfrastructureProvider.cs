@@ -12,6 +12,7 @@ namespace Litskevich.Family.Infrastructure.Services
 {
     public class FamilyInfrastructureProvider : InfrastructureProvider, IFamilyInfrastructureProvider
     {
+        public string MainEmail { get { return this.GetSettings("MainEmail"); } }
         public string WebSiteUrl { get { return this.GetSettings("WebSiteUrl"); } }
 
         public string FolderEmpty { get { return this.GetStorageSettings().FolderEmpty; } }

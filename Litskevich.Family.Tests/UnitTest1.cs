@@ -84,8 +84,10 @@ namespace Litskevich.Family.Tests
         }
 
         [TestMethod]
-        public void test_azure_AccountSAS()
+        public void test_email()
         {
+            //FamilyInfrastructureProvider i = new FamilyInfrastructureProvider();
+            //i.EmailService.SendNotification("soth@list.ru", new SXCore.Common.Values.Message("info lit", "hello message"));
         }
     }
 }
