@@ -89,5 +89,17 @@ namespace Litskevich.Family.Tests
             //FamilyInfrastructureProvider i = new FamilyInfrastructureProvider();
             //i.EmailService.SendNotification("soth@list.ru", new SXCore.Common.Values.Message("info lit", "hello message"));
         }
+
+        //[TestMethod]
+        //[DeploymentItem("img.jpg")]
+        //[DeploymentItem("vertical.jpg")]
+        //[DeploymentItem("horizontal.jpg")]
+        //public void test_rotate_image()
+        //{
+        //    var filename = "horizontal.jpg";
+        //    Imager img = Imager.Create(filename);
+        //    img.RotateCorrection();
+        //    img.Save("horizontal2.jpg");
+        //}
     }
 }

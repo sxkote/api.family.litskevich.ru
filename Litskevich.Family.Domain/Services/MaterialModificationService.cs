@@ -141,18 +141,18 @@ namespace Litskevich.Family.Domain.Services
                 var info = imager.Info;
 
                 // decide if the image should be resized (file size is big || dimensions are too large)
-                var resize = settings.ResizeLargeImages && material.File.Size > settings.MaxFileSize && (imager.Image.Width > settings.MaxWidth || imager.Image.Height > settings.MaxHeight);
+                var resize = settings.ResizeLargeImages && material.File.Size > settings.MaxFileSize && (imager.Width > settings.MaxWidth || imager.Height > settings.MaxHeight);
                 if (resize)
                 {
                     // resize the image
                     imager.Resize(settings.MaxWidth, settings.MaxHeight);
                 }
 
-                // if the image was resized => we need to resave new image 
-                if (resize)
-                {
-                    this.SaveImager(material, imager, settings.Quality);
-                }
+                // rotate correction
+                imager.RotateCorrection();
+
+                // save updated image
+                this.SaveImager(material, imager, settings.Quality);
 
                 // save thumbnail for image
                 _thumbnailProvider.SaveImageThumbnail(material, imager);
