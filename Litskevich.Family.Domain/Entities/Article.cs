@@ -42,7 +42,7 @@ namespace Litskevich.Family.Domain.Entities
 
             this.Materials.Add(material);
 
-            DomainEvents.Raise(new MaterialAddedEvent(this, material));
+            DomainEvents.Raise(new MaterialAddedToArticleEvent(this, material));
 
             return material;
         }

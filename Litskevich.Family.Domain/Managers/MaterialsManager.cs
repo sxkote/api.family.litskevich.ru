@@ -8,11 +8,8 @@ using SXCore.Common.Contracts;
 using SXCore.Common.Exceptions;
 using SXCore.Common.Interfaces;
 using SXCore.Common.Services;
-using SXCore.Common.Values;
 using SXCore.Domain.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Litskevich.Family.Domain.Managers
 {
@@ -43,6 +40,8 @@ namespace Litskevich.Family.Domain.Managers
             this.UnitOfWork.ArticleRepository.Update(article);
 
             this.SaveChanges();
+
+            DomainEvents.Raise(new MaterialSavedEvent(material));
 
             return material;
         }

@@ -9,23 +9,27 @@ using SXCore.Common.Services;
 using SXCore.Common.Values;
 using SXCore.Domain.Entities;
 using System;
+using System.Threading.Tasks;
 
 namespace Litskevich.Family.Domain.Services
 {
     public class MaterialModificationService :
-        IDomainEventHandler<MaterialAddedEvent>,
+        IDomainEventHandler<MaterialAddedToArticleEvent>,
         IDomainEventHandler<MaterialFileChangedEvent>,
         IDomainEventHandler<MaterialInfoChangedEvent>,
         IDomainEventHandler<MaterialTransformEvent>,
-        IDomainEventHandler<MaterialDeletedEvent>
+        IDomainEventHandler<MaterialDeletedEvent>,
+        IDomainEventHandler<MaterialSavedEvent>
     {
         protected IFamilyInfrastructureProvider _infrastructure;
         protected IThumbnailProvider _thumbnailProvider;
+        protected IVideoConverter _videoConverter;
 
-        public MaterialModificationService(IFamilyInfrastructureProvider infrastructure, IThumbnailProvider thumbnailProvider)
+        public MaterialModificationService(IFamilyInfrastructureProvider infrastructure, IThumbnailProvider thumbnailProvider, IVideoConverter videoConverter)
         {
             _infrastructure = infrastructure;
             _thumbnailProvider = thumbnailProvider;
+            _videoConverter = videoConverter;
         }
 
         protected Imager CreateImager(Material material)
@@ -107,7 +111,7 @@ namespace Litskevich.Family.Domain.Services
                 storage.CopyFile(thumbnailSourcePath, thumbnailDestPath, true);
         }
 
-        public void Handle(MaterialAddedEvent args)
+        public void Handle(MaterialAddedToArticleEvent args)
         {
             // Article should exist
             var article = args.Article;
@@ -243,6 +247,19 @@ namespace Litskevich.Family.Domain.Services
                 _infrastructure.StorageService.DeleteFile(thumbnailPath);
 
             this.MoveMaterialToFolder(material, _infrastructure.FolderDeleted);
+        }
+
+        public void Handle(MaterialSavedEvent args)
+        {
+            // FileBlob should exist
+            var material = args?.Material;
+            if (material == null || material.File == null)
+                return;
+
+            if (material.FileType == FileName.FileType.Video && _videoConverter != null)
+            {
+                Task.Run(() => _videoConverter.ConvertVideo(material.ID));
+            }
         }
     }
 }

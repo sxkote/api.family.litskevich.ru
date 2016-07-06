@@ -62,7 +62,7 @@ namespace Litskevich.Family.Infrastructure.Services
             if (material == null || material.File == null)
                 throw new CustomArgumentException("Can't define Thumbnail path for empty Material!");
 
-            return material.GetPath() + settings.Suffix;
+            return this.GetMaterialPath(material) + settings.Suffix;
         }
 
         public ParamValue CreateStorageSASToken(int hours)

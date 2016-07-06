@@ -21,6 +21,7 @@ namespace Litskevich.Family.WebApi
             );
 
             var cors = new System.Web.Http.Cors.EnableCorsAttribute("*", "*", "*");
+
             config.EnableCors(cors);
         }
     }

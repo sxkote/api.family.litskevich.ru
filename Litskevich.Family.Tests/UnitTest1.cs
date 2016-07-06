@@ -6,14 +6,16 @@ using System.Linq;
 using Litskevich.Family.Infrastructure.Services.Repositories;
 using Litskevich.Family.Domain.Managers;
 using Litskevich.Family.Infrastructure.Services;
-using SXCore.Common.Contracts;
-using SXCore.Infrastructure.Services;
 using SXCore.Common.Services;
 using System.IO;
 using System.Diagnostics;
-using SXCore.Infrastructure.Services.FileStorage;
-using Microsoft.WindowsAzure.Storage;
 using Litskevich.Family.Domain.Contracts.Services;
+using Litskevich.Family.Infrastructure.Services.CloudConverter;
+using Litskevich.Family.Infrastructure.Services.CloudConverter.Options;
+using Litskevich.Family.Infrastructure.Services.CloudConverter.Responses;
+using SXCore.Common.Values;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Litskevich.Family.Tests
 {
@@ -24,12 +26,18 @@ namespace Litskevich.Family.Tests
 
         public static System.Data.Entity.SqlServer.SqlProviderServices EnsureAssemblySqlServerIsCopied { get; set; }
 
+        string _cloudConverterApiKey = "";
+        string _onlineVideoUrl = "";
+
         private FamilyUnitOfWork _uow;
         private IFamilyInfrastructureProvider _infrastructure = new FamilyInfrastructureProvider();
 
+        [TestInitialize]
         public void Init()
         {
             _uow = new FamilyUnitOfWork();
+            _cloudConverterApiKey = _infrastructure.GetSettings("CloudConverterApiKey");
+            _onlineVideoUrl = _infrastructure.GetSettings("OnlineVideoUrl");
         }
 
         [TestMethod]
@@ -82,24 +90,22 @@ namespace Litskevich.Family.Tests
 
             File.WriteAllBytes(path3, img.Resize(200).Save(90));
         }
-
+       
         [TestMethod]
-        public void test_email()
+        public void test_video_convert()
         {
-            //FamilyInfrastructureProvider i = new FamilyInfrastructureProvider();
-            //i.EmailService.SendNotification("soth@list.ru", new SXCore.Common.Values.Message("info lit", "hello message"));
-        }
+            CloudConverterClient converter = new CloudConverterClient(_cloudConverterApiKey);
+            var process = converter.ConvertAsync(InputParameters.Create("mov", _onlineVideoUrl), OutputParameters.Create(), ConversionParameters.Create("mp4")).Result;
 
-        //[TestMethod]
-        //[DeploymentItem("img.jpg")]
-        //[DeploymentItem("vertical.jpg")]
-        //[DeploymentItem("horizontal.jpg")]
-        //public void test_rotate_image()
-        //{
-        //    var filename = "horizontal.jpg";
-        //    Imager img = Imager.Create(filename);
-        //    img.RotateCorrection();
-        //    img.Save("horizontal2.jpg");
-        //}
+            var status = converter.GetStatusAsync(process.Url).Result;
+            while (!status.IsFinished)
+            {
+                Thread.Sleep(3000);
+                status = converter.GetStatusAsync(process.Url).Result;
+            }
+
+            var bytes = converter.DownloadAsync(process.Url).Result;
+            File.WriteAllBytes(status.Output.Filename, bytes);
+        }
     }
 }

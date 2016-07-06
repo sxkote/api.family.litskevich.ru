@@ -53,6 +53,7 @@
     <Compile Include="Contracts\Repositories\IPersonRepository.cs" />
     <Compile Include="Contracts\Services\IFamilyInfrastructureProvider.cs" />
     <Compile Include="Contracts\Services\IThumbnailProvider.cs" />
+    <Compile Include="Contracts\Services\IVideoConverter.cs" />
     <Compile Include="Entities\Article.cs" />
     <Compile Include="Entities\Guest.cs" />
     <Compile Include="Entities\Manager.cs" />
@@ -62,9 +63,10 @@
     <Compile Include="Entities\Person.cs" />
     <Compile Include="Events\GuestCreatedEvent.cs" />
     <Compile Include="Events\ManagerCreatedEvent.cs" />
-    <Compile Include="Events\MaterialAddedEvent.cs" />
+    <Compile Include="Events\MaterialAddedToArticleEvent.cs" />
     <Compile Include="Events\MaterialDeletedEvent.cs" />
     <Compile Include="Events\MaterialInfoChangedEvent.cs" />
+    <Compile Include="Events\MaterialSavedEvent.cs" />
     <Compile Include="Events\MaterialTransformEvent.cs" />
     <Compile Include="Events\MembersChangedEvent.cs" />
     <Compile Include="Events\RegistrationRequestedEvent.cs" />

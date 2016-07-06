@@ -26,18 +26,19 @@ namespace Litskevich.Family.WebApi
             container.RegisterType<MaterialsManager, IMaterialsManager>(scope);
 
             // Services
-
+            container.RegisterType<VideoConverter, IVideoConverter>(scope);
 
             // Domain Events Handlers
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<RegistrationRequestedEvent>>(scope);
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<ManagerCreatedEvent>>(scope);
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<GuestCreatedEvent>>(scope);
 
-            container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialAddedEvent>>(scope);
+            container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialAddedToArticleEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialDeletedEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialFileChangedEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialTransformEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialInfoChangedEvent>>(scope);
+            container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialSavedEvent>>(scope);
         }
     }
 }
