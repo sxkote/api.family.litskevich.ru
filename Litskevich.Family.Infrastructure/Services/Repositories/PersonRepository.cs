@@ -69,5 +69,13 @@ namespace Litskevich.Family.Infrastructure.Services.Repositories
         {
             return this.QueryAll.Where(p => ids.Contains(p.ID)).ToList();    
         }
+
+        public Person GetByPasswordRecovery(string search)
+        {
+            return this.QueryAll
+                .Include(p => p.Manager)
+                .Where(p => p.Manager != null && (p.Phone.Equals(search, StringComparison.OrdinalIgnoreCase) || p.Email.Equals(search, StringComparison.OrdinalIgnoreCase) || p.Manager.Login.Equals(search, StringComparison.OrdinalIgnoreCase)))
+                .FirstOrDefault();
+        }
     }
 }

@@ -12,7 +12,9 @@ namespace Litskevich.Family.Domain.Services
     public class NotificationsHandlerService :
         IDomainEventHandler<RegistrationRequestedEvent>,
         IDomainEventHandler<ManagerCreatedEvent>,
-        IDomainEventHandler<GuestCreatedEvent>
+        IDomainEventHandler<GuestCreatedEvent>,
+        IDomainEventHandler<PasswordRecoveryRequestedEvent>,
+        IDomainEventHandler<PasswordChangedEvent>
     {
         private IFamilyInfrastructureProvider _infrastructure;
 
@@ -99,5 +101,44 @@ namespace Litskevich.Family.Domain.Services
             catch { }
         }
 
+        public void Handle(PasswordRecoveryRequestedEvent args)
+        {
+            if (String.IsNullOrWhiteSpace(args.Email))
+                return;
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"Вы создали запрос на восстановление пароля на сайте семейного ахрива:");
+            sb.AppendLine($"{this.Infrastructure.WebSiteUrl}");
+            sb.AppendLine();
+            sb.AppendLine($"Если Вы этого не делали, просто проигнорируйте это письмо!");
+            sb.AppendLine();
+            sb.AppendLine($"Если, все же, это необходимо Вам, то для восстановления пароля, перейдите по этой ссылке:");
+            sb.AppendLine($"{this.Infrastructure.PasswordRecoveryPage}{args.Code}");
+            sb.AppendLine();
+            sb.AppendLine("С уважением,");
+            sb.AppendLine("Семейный Архив Лицкевичей");
+
+            try { this.EmailService.SendNotification(args.Email, new Message("Восстановление пароля на сайте семейного архива", sb.ToString())); }
+            catch { }
+        }
+
+        public void Handle(PasswordChangedEvent args)
+        {
+            if (String.IsNullOrWhiteSpace(args.Email))
+                return;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Ваш пароль для сайта семейного архива был изменен:");
+            sb.AppendLine();
+            sb.AppendLine($"Адрес сайта: {this.Infrastructure.WebSiteUrl}");
+            sb.AppendLine($"Логин: {args.Login}");
+            sb.AppendLine($"Пароль: {args.Password}");
+            sb.AppendLine();
+            sb.AppendLine("С уважением,");
+            sb.AppendLine("Семейный Архив Лицкевичей");
+
+            try { this.EmailService.SendNotification(args.Email, new Message("Смена пароля на сайте семейного архива", sb.ToString())); }
+            catch { }
+        }
     }
 }

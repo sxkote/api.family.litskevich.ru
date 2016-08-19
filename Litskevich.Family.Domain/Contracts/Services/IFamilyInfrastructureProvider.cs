@@ -9,6 +9,7 @@ namespace Litskevich.Family.Domain.Contracts.Services
     {
         string MainEmail { get; }
         string WebSiteUrl { get; }
+        string PasswordRecoveryPage { get; }
 
         string FolderEmpty { get; }
         string FolderDeleted { get; }

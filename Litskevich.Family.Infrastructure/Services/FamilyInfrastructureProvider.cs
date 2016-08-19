@@ -14,6 +14,7 @@ namespace Litskevich.Family.Infrastructure.Services
     {
         public string MainEmail { get { return this.GetSettings("MainEmail"); } }
         public string WebSiteUrl { get { return this.GetSettings("WebSiteUrl"); } }
+        public string PasswordRecoveryPage { get { return this.GetSettings("PasswordRecoveryPage"); } }
 
         public string FolderEmpty { get { return this.GetStorageSettings().FolderEmpty; } }
         public string FolderDeleted { get { return this.GetStorageSettings().FolderDeleted; } }

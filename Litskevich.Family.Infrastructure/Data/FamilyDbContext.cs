@@ -19,8 +19,9 @@ namespace Litskevich.Family.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             //Complex Types
-         
+
             // Entities
+            modelBuilder.Configurations.Add(new ActivityConfiguration());
             modelBuilder.Configurations.Add(new PersonConfiguration());
             modelBuilder.Configurations.Add(new ManagerConfiguration());
             modelBuilder.Configurations.Add(new ManagerRoleTypeConfiguration());

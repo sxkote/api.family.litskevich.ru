@@ -9,10 +9,21 @@ namespace Litskevich.Family.Infrastructure.Services
 {
     public class FamilyUnitOfWork : CoreUnitOfWork<FamilyDbContext>, IFamilyUnitOfWork
     {
+        private IActivityRepository _activityRepository;
         private IPersonRepository _personRepository;
         private IGuestRepository _guestRepository;
         private IArticleRepository _articlesRepository;
         private IMaterialRepository _materialRepository;
+
+        public IActivityRepository ActivityRepository
+        {
+            get
+            {
+                if (_activityRepository == null)
+                    _activityRepository = new ActivityRepository(this.DbContext);
+                return _activityRepository;
+            }
+        }
 
         public IPersonRepository PersonRepository
         {

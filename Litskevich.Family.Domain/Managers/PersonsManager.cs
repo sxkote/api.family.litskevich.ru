@@ -172,5 +172,67 @@ namespace Litskevich.Family.Domain.Managers
 
             DomainEvents.Raise(new GuestCreatedEvent(guest.Name, guest.Email, guest.Login, pass));
         }
+
+        public void PasswordRecoveryInit(string search)
+        {
+            var person = this.UnitOfWork.PersonRepository.GetByPasswordRecovery(search);
+            if (person == null || person.Manager == null)
+                throw new CustomNotFoundException("Пользователь не найден!");
+
+            var activity = Activity.Create(CommonService.Now.AddDays(1), "PasswordRecovery", person.ID.ToString());
+
+            this.UnitOfWork.ActivityRepository.Add(activity);
+
+            this.SaveChanges();
+
+            DomainEvents.Raise(new PasswordRecoveryRequestedEvent(activity.Code, person.Name, person.Email));
+        }
+
+        public void PasswordRecoveryComplete(string code)
+        {
+            var errorMessage = "Невозможно восстановить пароль! Попробуйте еще раз!";
+
+            try
+            {
+                // get valid activity
+                var activity = this.UnitOfWork.ActivityRepository.GetByCode(code);
+                if (activity == null || !activity.IsValid())
+                    throw new CustomOperationException(errorMessage);
+
+                // check if activity of type RestorePassword
+                if (!activity.Identifier.Equals("PasswordRecovery", StringComparison.OrdinalIgnoreCase))
+                    throw new CustomOperationException(errorMessage);
+
+                // check if Data is not empty
+                if (String.IsNullOrWhiteSpace(activity.Data))
+                    throw new CustomOperationException(errorMessage);
+
+                // get Person by ID (stored in the Data field of activity)
+                var personID = Convert.ToInt64(activity.Data);
+                var person = this.UnitOfWork.PersonRepository.GetWithManager(personID);
+                if (person == null || person.Manager == null)
+                    throw new CustomOperationException(errorMessage);
+
+                // generate new password
+                var pass = CommonService.GeneratePassword(8, false);
+
+                // change password for manager
+                person.Manager.ChangePassword(pass);
+                this.UnitOfWork.PersonRepository.Update(person);
+
+                // discard activity to futher actions
+                activity.Discard();
+                this.UnitOfWork.ActivityRepository.Update(activity);
+
+                this.SaveChanges();
+
+                // password was changed
+                DomainEvents.Raise(new PasswordChangedEvent(person.Name, person.Email, person.Manager.Login, pass));
+            }
+            catch
+            {
+                throw new CustomOperationException(errorMessage);
+            }
+        }
     }
 }

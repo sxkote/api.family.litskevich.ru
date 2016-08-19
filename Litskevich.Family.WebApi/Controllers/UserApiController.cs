@@ -32,5 +32,20 @@ namespace Litskevich.Family.WebApi.Controllers
             _manager.ChangePassword(request.PasswordOld, request.PasswordNew);
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("recovery/init")]
+        public void PasswordRecoveryInit([FromBody]PasswordRecoveryInitRequest request)
+        {
+            _manager.PasswordRecoveryInit(request.Search);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("recovery/complete")]
+        public void PasswordRecoveryComplete([FromBody]PasswordRecoveryCompleteRequest request)
+        {
+            _manager.PasswordRecoveryComplete(request.Code);
+        }
     }
 }

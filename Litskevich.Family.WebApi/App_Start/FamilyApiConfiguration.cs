@@ -32,6 +32,8 @@ namespace Litskevich.Family.WebApi
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<RegistrationRequestedEvent>>(scope);
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<ManagerCreatedEvent>>(scope);
             container.RegisterType<NotificationsHandlerService, IDomainEventHandler<GuestCreatedEvent>>(scope);
+            container.RegisterType<NotificationsHandlerService, IDomainEventHandler<PasswordRecoveryRequestedEvent>>(scope);
+            container.RegisterType<NotificationsHandlerService, IDomainEventHandler<PasswordChangedEvent>>(scope);
 
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialAddedToArticleEvent>>(scope);
             container.RegisterType<MaterialModificationService, IDomainEventHandler<MaterialDeletedEvent>>(scope);

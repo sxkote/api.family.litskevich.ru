@@ -10,5 +10,6 @@ namespace Litskevich.Family.Domain.Contracts.Repositories
         IEnumerable<Person> GetByIDs(IEnumerable<long> ids);
         Person GetWithManager(long personID);
         Person GetByLogin(string login);
+        Person GetByPasswordRecovery(string search);
     }
 }

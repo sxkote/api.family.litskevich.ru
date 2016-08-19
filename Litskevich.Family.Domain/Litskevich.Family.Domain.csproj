@@ -47,6 +47,7 @@
     <Compile Include="Contracts\Managers\IFilesManager.cs" />
     <Compile Include="Contracts\Managers\IMaterialsManager.cs" />
     <Compile Include="Contracts\Managers\IPersonsManager.cs" />
+    <Compile Include="Contracts\Repositories\IActivityRepository.cs" />
     <Compile Include="Contracts\Repositories\IArticleRepository.cs" />
     <Compile Include="Contracts\Repositories\IGuestRepository.cs" />
     <Compile Include="Contracts\Repositories\IMaterialRepository.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Contracts\Services\IFamilyInfrastructureProvider.cs" />
     <Compile Include="Contracts\Services\IThumbnailProvider.cs" />
     <Compile Include="Contracts\Services\IVideoConverter.cs" />
+    <Compile Include="Entities\Activity.cs" />
     <Compile Include="Entities\Article.cs" />
     <Compile Include="Entities\Guest.cs" />
     <Compile Include="Entities\Manager.cs" />
@@ -69,6 +71,8 @@
     <Compile Include="Events\MaterialSavedEvent.cs" />
     <Compile Include="Events\MaterialTransformEvent.cs" />
     <Compile Include="Events\MembersChangedEvent.cs" />
+    <Compile Include="Events\PasswordChangedEvent.cs" />
+    <Compile Include="Events\PasswordRecoveryRequestedEvent.cs" />
     <Compile Include="Events\RegistrationRequestedEvent.cs" />
     <Compile Include="Managers\ArticlesManager.cs" />
     <Compile Include="Managers\FilesManager.cs" />
